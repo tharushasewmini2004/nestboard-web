@@ -17,7 +17,7 @@ import type {
   User,
 } from '@/types';
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL ?? '/api';
 
 const ACCESS_KEY = 'accessToken';
 const REFRESH_KEY = 'refreshToken';
@@ -63,9 +63,9 @@ async function refreshAccessToken(): Promise<string | null> {
 }
 
 async function request<T>(path: string, options: RequestInit = {}, retry = true): Promise<T> {
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers ?? {}),
+    ...(options.headers as Record<string, string> | undefined),
   };
 
   const token = getAccessToken();
@@ -190,7 +190,8 @@ export const api = {
 export function imageUrl(path: string) {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  return `http://localhost:4000${path}`;
+  const origin = API_BASE.replace(/\/api\/?$/, '');
+  return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 export function formatDate(iso: string) {
