@@ -19,6 +19,15 @@ import type {
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api';
 
+function apiFetchErrorMessage(cause: unknown): string {
+  const hint =
+    import.meta.env.PROD && API_BASE === '/api'
+      ? ' Set VITE_API_URL on Vercel to your deployed API (e.g. https://your-api.onrender.com/api).'
+      : '';
+  const base = cause instanceof Error ? cause.message : 'Network request failed';
+  return `${base} (API: ${API_BASE})${hint}`;
+}
+
 const ACCESS_KEY = 'accessToken';
 const REFRESH_KEY = 'refreshToken';
 
@@ -46,11 +55,16 @@ async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
-  const res = await fetch(`${API_BASE}/auth/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+  } catch (e) {
+    throw new Error(apiFetchErrorMessage(e));
+  }
 
   const json: ApiResponse<AuthTokens> = await res.json();
   if (!res.ok || !json.success || !json.data) {
@@ -71,7 +85,12 @@ async function request<T>(path: string, options: RequestInit = {}, retry = true)
   const token = getAccessToken();
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  } catch (e) {
+    throw new Error(apiFetchErrorMessage(e));
+  }
   const text = await res.text();
   let json: ApiResponse<T>;
   try {
@@ -80,7 +99,7 @@ async function request<T>(path: string, options: RequestInit = {}, retry = true)
     throw new Error(
       res.ok
         ? 'Invalid response from server'
-        : `Server unavailable (${res.status}). Is the API running on port 4000?`
+        : `Server unavailable (${res.status}) at ${API_BASE}${path}`
     );
   }
 
