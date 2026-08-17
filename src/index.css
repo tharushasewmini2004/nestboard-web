@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html[data-theme='light'],
+  html:not([data-theme]) {
+    color-scheme: light;
+  }
+
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900 antialiased;
+  }
+
+  html[data-theme='dark'] body {
+    @apply bg-stone-950 text-stone-100;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-nest-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-nest-700 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50
+      dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 dark:hover:bg-stone-800;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50;
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-nest-500 focus:ring-2 focus:ring-nest-100
+      dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder:text-stone-500 dark:focus:border-nest-500 dark:focus:ring-nest-900/40;
+  }
+  .input-field-light {
+    @apply w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-nest-500 focus:ring-2 focus:ring-nest-100;
+  }
+  .page-title {
+    @apply font-display text-3xl font-bold text-stone-900 dark:text-stone-100;
+  }
+  .page-subtitle {
+    @apply text-stone-600 dark:text-stone-400;
+  }
+  .text-price {
+    @apply font-semibold text-nest-700 dark:text-nest-400;
+  }
+  .label-muted {
+    @apply text-xs font-medium text-stone-500 dark:text-stone-400;
+  }
+  .card {
+    @apply rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-stone-800 dark:bg-stone-900;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide;
+  }
+  .badge-pending { @apply badge bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300; }
+  .badge-confirmed { @apply badge bg-nest-100 text-nest-800 dark:bg-nest-900/40 dark:text-nest-300; }
+  .badge-cancelled { @apply badge bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400; }
+  .badge-expired { @apply badge bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300; }
+  .alert-error {
+    @apply rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300;
+  }
+  .alert-warning {
+    @apply rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-300;
+  }
+  .alert-info {
+    @apply rounded-xl border border-nest-200 bg-nest-50 px-4 py-3 text-nest-800 dark:border-nest-800 dark:bg-nest-900/50 dark:text-nest-300;
+  }
+}
+
+.leaflet-container { z-index: 0; }
+
+.dark .leaflet-popup-content-wrapper,
+html[data-theme='dark'] .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip,
+html[data-theme='dark'] .leaflet-popup-tip {
+  background: rgb(28 25 23);
+  color: rgb(245 245 244);
+}
+
+.dark .leaflet-popup-content-wrapper,
+html[data-theme='dark'] .leaflet-popup-content-wrapper {
+  border: 1px solid rgb(41 37 36);
+}
